@@ -1,0 +1,21 @@
+# Final Project Summary
+Nisaga Shashidhar
+
+## Program Functionality
+This project aims to average the lap time of "push" laps (laps where drivers are attempting to set a fastest lap time) during practice sessions to predict qualifying sessions using data available from the OpenF1 API.
+The program starts by requesting a year and location of a grand prix from the user in order to determine which weekend's data should be surveyed. The program verifies inputs to make sure the user has entered valid information, and that the requested Grand Prix has occured so that there is data to fetch and evaluate. The program then requests and compiles data from OpenF1 about the practice sessions and drivers participating in the practice sessions (ignoring junior drivers who may be testing in Free Practice 1). Some weekends may only have 1 practice session, but others have 3 practice sessions. Then, the program requests and gathers data from the "stints" (a group of laps were the tyre is unchanged and the car has not pitted) and the laps during a session. The tyre age and compound data from the stints are then mapped onto the laps. With this information, the program calculates the weighted average of all push laps in a session, and all sessions combined, for each driver. Drivers are ranked based on the overall average. The weighted averages are then compared to the actual results of the qualifying session and the corresponding lap times. This data can then be exported to a txt file upon the user's request.
+
+## Program Usefulness
+As an avid F1 fan, this helps model and evaluate just the qualifying laps of practice sessions. When actually watching the practice sessions, you can't collect and visualize the data to form a bigger picture, as you just see the fastest laps on the timing tower. This model favors consistency. Unfortunately, due to the nature of the OpenF1 API, I cannot access the data from the last practice session until after the qualifying results are posted, unless I pay. However, this is a solid model that can easily be converted to truly display only predictions should I enter a financial situation where I can comfortably pay for this feature. It can also help me understand tyre degradation in qualifying better, and observe any changes that occur when regulations are changed between races.
+
+## About Modeling Tyre Degradation
+Tyre degredation is a huge factor in calculating times, one that many dedicate their whole careers to studying. There are many factors, such as track conditions, etc. Even F1 teams can't take apart the tyres to study them. There's no way for me to accurately model this, so I am referencing the following, simplifying and altering the model to account for the soft tyre compound and the nature of qualifying practice:
+
+"Strategy teams normally implement a multi-phase tyre model:
+- Phase 1: Warmup - the tyre is brand new and might actually get a bit faster over one lap
+- Phase 2: Initial steady-state degradation - this is a normal, manageable level of degradation and is surprisingly linear. Could be 10-40 laps long, maybe 0.02-0.1s/lap
+- Phase 3: Tyre starting to properly wear, a step change in degradation. This normally lasts 1-4 laps and you'll be struggling to keep up - 0.3-0.5s/lap
+- Phase 4: Tyre is dead, need to pit immediately. Only useful for one/two laps if it avoids making an extra stop - Phase 3 + two laps of Phase 4 is normally about a pit stop or more."
+(https://www.reddit.com/r/F1Technical/comments/17s8kbs/comment/k8oasx4/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
+
+Practicing for Qualifying works a little differently from practicing for a race, where the goal is to set the fastest time in one lap. Because of this, teams will have drivers warm up their tyres, do a "push" lap, and then cool down/warm up again before doing another "push" lap, and repeat the cycle. I made sure to discount the warmup/cooldown laps as well as weighting the tyres by age. Like mentioned in phase 2, tyres start to degrade 0.02-0.1s/lap, with soft tyres degrading faster than medium or hard tyres. I chose 15 laps as the cutoff between Phase 2 and Phase 3, as that is typically how long a stint on soft tyres is during a race.
